@@ -18,12 +18,20 @@ public/
   ├──index.html
 src/
   ├── components/
-  │   ├── App.css
-  │   ├── App.js
-  │   ├── index.js
-  |   ├── webpack.config.js
-  ├── package-lock.json
-  ├── package.json
+  |   ├──ClassComponent.js
+  |   ├──ClassTimer.js
+  |   ├──FunctionalComponent.js
+  |   ├──FunctionalTimer.js
+  |   ├──LifecycleCompare.js
+  |   ├──ParentComponent.js
+  |   ├──ProfileCard.js
+  |   ├──ProfileContainer.js
+  ├── App.css
+  ├── App.js
+  ├── index.js
+  ├── webpack.config.js
+package-lock.json
+package.json
 ```
 ## 📖5. Hướng dẫn cài đặt
 Để chạy dự án này trên máy tính của bạn, hãy làm theo các bước sau:
