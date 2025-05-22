@@ -71,4 +71,411 @@ package.json
     ```
 - File build sẽ được tạo trong thư mục build/.
 
-## 6. 
+## 🔎6. So sánh Functional & Class trong React
+
+**6.1 Cú pháp (Syntax) **:
+
+**Functional Component (Ngắn gọn và hiện đại)**
+
+- Dễ viết, dễ đọc.
+
+- Dùng `React Hooks` để xử lý state, hiệu ứng, context, v.v.
+ 
+```jsx
+import { useState, useEffect } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("Mounted or updated");
+    return () => console.log("Unmounted");
+  }, [count]);
+
+  return (
+    <div>
+      <p>Bạn đã bấm {count} lần</p>
+      <button onClick={() => setCount(count + 1)}>Tăng</button>
+    </div>
+  );
+}
+```
+
+**Class Component (Dài dòng, OOP-style)**
+
+```jsx
+import React from 'react';
+
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  componentDidMount() {
+    console.log("Mounted");
+  }
+
+  componentDidUpdate() {
+    console.log("Updated");
+  }
+
+  componentWillUnmount() {
+    console.log("Unmounted");
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Bạn đã bấm {this.state.count} lần</p>
+        <button onClick={() => this.setState({ count: this.state.count + 1 })}>Tăng</button>
+      </div>
+    );
+  }
+}
+```
+
+**6.2 Hiệu suất (Performance)**
+
+**Functional Component**:
+
+- Kết hợp với **Hooks** và **Memoization** (`React.memo`, `useCallback`, `useMemo`) để tối ưu render.
+
+- Dễ kiểm soát side effect thông qua `useEffect`.
+
+**Class Component**:
+
+- Không có hook, cần viết thủ công nhiều logic để kiểm soát hiệu suất.
+
+- Dễ gặp lỗi render lại không cần thiết nếu không xử lý kỹ `shouldComponentUpdate()`.
+
+| Hiệu suất              | Functional Component   | Class Component                    |
+| ---------------------- | ---------------------- | ---------------------------------- |
+| Dễ tối ưu hóa          | ✅ (hook + memo hóa dễ) | ❌ (phức tạp hơn)                   |
+| Gọn và rõ side effects | ✅ (`useEffect`)        | ❌ (phải chia ra nhiều phương thức) |
+
+**6.3 Tính dễ sử dụng (Ease of Use)**
+
+| Tiêu chí                     | Functional Component           | Class Component           |
+| ---------------------------- | ------------------------------ | ------------------------- |
+| Dễ học với người mới         | ✅                              | ❌ (phức tạp `this`, bind) |
+| Dễ chia sẻ logic tái sử dụng | ✅ với `Custom Hooks`           | ❌                         |
+| Dễ test và maintain          | ✅                              | ❌                         |
+| Hướng phát triển tương lai   | ✅ được React team khuyến khích | ❌                         |
+
+## Kết luận chung:
+
+| Tiêu chí                   | **Functional Component**                       | **Class Component**                  |
+| -------------------------- | ---------------------------------------------- | ------------------------------------ |
+| Cú pháp                    | Ngắn gọn, dễ viết                              | Dài dòng, phức tạp hơn               |
+| Tính năng nâng cao         | Hook hỗ trợ `state`, `effect`, `context`, v.v. | Phải dùng nhiều phương thức vòng đời |
+| Quản lý vòng đời           | `useEffect`                                    | `componentDidMount`, v.v.            |
+| Dễ đọc, dễ học             | ✅                                              | ❌ (rườm rà, cần hiểu OOP)            |
+| Khả năng tái sử dụng logic | ✅ (Custom Hooks)                               | ❌ (khó tách logic)                   |
+| Hướng phát triển chính     | ✅ (React team khuyên dùng)                     | ❌ (legacy, ít dùng trong dự án mới)  |
+| Tối ưu hiệu suất           | ✅ với `React.memo`, `useCallback`              | ❌ phức tạp hơn                       |
+
+## 7. Quản lý Props và State
+cách triển khai Props và State
+
+**Functional Component**
+
+- Sử dụng `Props`
+  
+Props được truyền vào dưới dạng đối số của hàm:
+```jsx
+function Greeting({ name }) {
+  return <h1>Xin chào, {name}!</h1>;
+}
+```
+- Sử dụng `State` với `useState`
+```jsx
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0); // Khởi tạo state
+
+  return (
+    <div>
+      <p>Đã bấm {count} lần</p>
+      <button onClick={() => setCount(count + 1)}>Tăng</button>
+    </div>
+  );
+}
+```
+- Kết hợp `Props`, `State` và `useEffect`
+```jsx
+import { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Mô phỏng gọi API lấy thông tin user
+    fetch(`/api/users/${userId}`)
+      .then((res) => res.json())
+      .then((data) => setUser(data));
+  }, [userId]); // Chạy lại khi userId thay đổi
+
+  return <div>{user ? <p>Tên: {user.name}</p> : <p>Đang tải...</p>}</div>;
+}
+```
+**Class Component**
+
+- Sử dụng `Props`
+  
+  Props được truy cập qua this.props:
+```jsx
+  class Greeting extends React.Component {
+  render() {
+    return <h1>Xin chào, {this.props.name}!</h1>;
+  }
+}
+  ```
+- Sử dụng `state`
+
+ State được khởi tạo trong constructor và cập nhật bằng this.setState():
+ ```jsx
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 }; // Khởi tạo state
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Đã bấm {this.state.count} lần</p>
+        <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+          Tăng
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+- Kết hợp `Props`, `State` và lifecycle methods
+```jsx
+ class UserProfile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { user: null };
+  }
+
+  componentDidMount() {
+    fetch(`/api/users/${this.props.userId}`)
+      .then((res) => res.json())
+      .then((data) => this.setState({ user: data }));
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      fetch(`/api/users/${this.props.userId}`)
+        .then((res) => res.json())
+        .then((data) => this.setState({ user: data }));
+    }
+  }
+
+  render() {
+    const { user } = this.state;
+    return <div>{user ? <p>Tên: {user.name}</p> : <p>Đang tải...</p>}</div>;
+  }
+}
+```
+## 🕐8. Ví dụ về phương thức vòng đời
+
+Ví dụ: theo dõi cửa sổ trình duyệt
+
+- **8.1 Class Component – Sử dụng Lifecycle Methods**
+
+```jsx
+import React from 'react';
+
+class WindowSizeTracker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { width: window.innerWidth };
+    this.handleResize = this.handleResize.bind(this);
+  }
+
+  // Khi component được mount
+  componentDidMount() {
+    console.log('Mounted');
+    window.addEventListener('resize', this.handleResize);
+  }
+
+  // Khi component được update
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.width !== this.state.width) {
+      console.log(`Updated: Width changed to ${this.state.width}`);
+    }
+  }
+
+  // Khi component bị unmount
+  componentWillUnmount() {
+    console.log('Unmounted');
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  handleResize() {
+    this.setState({ width: window.innerWidth });
+  }
+
+  render() {
+    return <h2>Chiều rộng cửa sổ: {this.state.width}px</h2>;
+  }
+}
+```
+- **8.2 Functional Component – Sử dụng `useEffect`**
+```jsx
+import { useState, useEffect } from 'react';
+
+function WindowSizeTracker() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    console.log('Mounted');
+    
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup function = tương đương componentWillUnmount
+    return () => {
+      console.log('Unmounted');
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // Chạy 1 lần sau khi mount
+
+  useEffect(() => {
+    console.log(`Updated: Width changed to ${width}`);
+  }, [width]); // Chạy khi `width` thay đổi
+
+  return <h2>Chiều rộng cửa sổ: {width}px</h2>;
+}
+```
+
+## 👨‍👩‍👧9. Tương tác giữa thành phần cha và con
+Ví dụ: **Cha** hiển thị số lần người dùng nhấn nút trong **Con**.
+
+- **Con** chỉ có nút "Tăng".
+
+- `State` được lưu ở thành phần **Cha**.
+
+- **Con** nhận `callback` từ **Cha** và gọi khi người dùng nhấn.
+**9.1 Functional Component**
+ ```jsx
+// Cha
+import React,  { useState } from 'react';
+import Child from './Child';
+
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  const handleIncrease = () => {
+    setCount(prev => prev + 1);
+  };
+
+  return (
+    <div>
+      <h2>Số lần nhấn: {count}</h2>
+      <Child onIncrease={handleIncrease} />
+    </div>
+  );
+}
+export default Parent;
+```
+```jsx
+// Con
+import React from 'react';
+
+function Child({ onIncrease }) {
+  return (
+    <div>
+      <button onClick={onIncrease}>Tăng từ component con</button>
+    </div>
+  );
+}
+export default Child;
+```
+**9.2 Class Component** 
+```jsx
+// Cha
+import React from 'react';
+import Child from './Child';
+
+class Parent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+    this.handleIncrease = this.handleIncrease.bind(this);
+  }
+
+  handleIncrease() {
+    this.setState(prev => ({ count: prev.count + 1 }));
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>Số lần nhấn: {this.state.count}</h2>
+        <Child onIncrease={this.handleIncrease} />
+      </div>
+    );
+  }
+}
+
+export default Parent;
+```
+ ```jsx
+// Con
+import React from 'react';
+
+class Child extends React.Component {
+  render() {
+    return (
+      <button onClick={this.props.onIncrease}>
+        Tăng từ component con
+      </button>
+    );
+  }
+}
+
+export default Child;
+```
+
+
+
+
+
+
+## 📦10. Tài nguyên học tập
+
+**Bài viết và tài liệu**:
+
+- [Components and Prop](https://reactjs.org/docs/components-and-props.html)
+  
+- [Function Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components)
+  
+- [Prop vs State](https://www.geeksforgeeks.org/difference-between-state-and-props-in-react)
+
+**Thực hành & Playground**:
+
+- [CodeSandBox - Functional vs Class component](https://codesandbox.io/)
+
+- [Learn React free with Scrimba](https://scrimba.com/learn/learnreact)
+
+
+
+
+
+
+
+
+
+
+
+
