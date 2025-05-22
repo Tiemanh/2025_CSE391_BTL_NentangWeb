@@ -3,8 +3,8 @@ import ProfileCard from './ProfileCard';
 
 const ProfileContainer = () => {
   const userData = {
-    name: "DM nhanh nghĩ tên nhóm",
-    avatar: "/images/tqbt.jpg", // Đường dẫn đúng đến ảnh
+    name: "Quang Minh và những người bạn",
+    avatar: "/images/tqbt.jpg",
     bio: "Frontend Developer & React Enthusiast Specializing in React Hooks and Modern Web Development"
   };
 
