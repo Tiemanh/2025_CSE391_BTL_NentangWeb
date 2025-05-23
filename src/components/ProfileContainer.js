@@ -3,7 +3,7 @@ import ProfileCard from './ProfileCard';
 
 const ProfileContainer = () => {
   const userData = {
-    name: "Quang Minh và những người bạn",
+    name: "Nhóm Tu Tiên",
     avatar: "/images/tqbt.jpg",
     bio: "Frontend Developer & React Enthusiast Specializing in React Hooks and Modern Web Development"
   };
